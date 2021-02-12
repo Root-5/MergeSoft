@@ -1,0 +1,3 @@
+some text
+for check
+read in java
