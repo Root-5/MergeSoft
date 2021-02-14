@@ -32,10 +32,13 @@ public class Main {
             list1 = new ArrayList<Integer>();
             list2 = new ArrayList<Integer>();
             result = new ArrayList<Integer>();
-        } else {
+        } else if (options.dataType == 's') {
             list1 = new ArrayList<String>();
             list2 = new ArrayList<String>();
             result = new ArrayList<String>();
+        } else {
+            System.out.println("Error: Data type entered incorrectly");
+            return;
         }
 
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(new FileInputStream(options.inputFiles.get(0)), StandardCharsets.UTF_8));
@@ -62,25 +65,24 @@ public class Main {
         switch (options.sortOrder) {
             case 'a': {
                 switch (options.dataType) {
-                    case 's' -> {
-                        result = Sorter.sortStr(list1, list2);
-                    }
-                    case 'i' -> {
-                        result = Sorter.sortInt(list1, list2);
-                    }
+                    case 's' -> result = Sorter.sortStrAsc(list1, list2);
+                    case 'i' -> result = Sorter.sortIntAsc(list1, list2);
                 }
             }
             case 'd': {
-
+                switch (options.dataType) {
+                    case 's' -> result = Sorter.sortStrDes(list1, list2);
+                    case 'i' -> result = Sorter.sortIntDes(list1, list2);
+                }
             }
         }
 
         if (options.dataType == 'i') {
-            for(Object integer: result) {
+            for (Object integer : result) {
                 System.out.println(integer);
             }
         } else {
-            for(Object str: result) {
+            for (Object str : result) {
                 System.out.println(str);
             }
         }
