@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        // Parse the args
         Options options = ParserArgs.parse(args);
         System.out.println(
                 "\nSort order: " + options.sortOrder +
@@ -16,6 +17,7 @@ public class Main {
                         "\nInput files: " + options.inputFiles
         );
 
+        // Try to create output file
         try {
             if (new File(options.nameOutputFile).createNewFile())
                 System.out.println("File " + options.nameOutputFile + " was created!");
@@ -24,6 +26,7 @@ public class Main {
             exception.printStackTrace();
         }
 
+        // Declare and initialize lists of values
         ArrayList list1;
         ArrayList list2;
         ArrayList result;
@@ -41,8 +44,62 @@ public class Main {
             return;
         }
 
-        BufferedReader reader1 = new BufferedReader(new InputStreamReader(new FileInputStream(options.inputFiles.get(0)), StandardCharsets.UTF_8));
-        BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream(options.inputFiles.get(1)), StandardCharsets.UTF_8));
+
+        initializeLists(list1, list2, options.inputFiles.get(0), options.inputFiles.get(1), options);
+        result = Sorter.sort(options, list1, list2);
+
+        if (options.inputFiles.size() > 2) {
+            for (int i = 2; i < options.inputFiles.size(); i++) {
+                initializeList(list2, options.inputFiles.get(i), options);
+                result = Sorter.sort(options, result, list2);
+            }
+        }
+
+        /*
+        for (Object ob : result) {
+            System.out.println(ob);
+        }*/
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(options.nameOutputFile))) {
+            for (Object ob : result) {
+                writer.write(ob.toString() + '\n');
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static void initializeList(ArrayList list, String nameFile, Options options) throws IOException {
+        BufferedReader bufferedReader;
+        list.clear();
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(nameFile), StandardCharsets.UTF_8));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
+        String line;
+        if (options.dataType == 's') {
+            while ((line = bufferedReader.readLine()) != null) {
+                list.add(line);
+            }
+        } else {
+            while ((line = bufferedReader.readLine()) != null) {
+                list.add(Integer.parseInt(line));
+            }
+        }
+    }
+
+    public static void initializeLists(ArrayList list1, ArrayList list2, String nameFile1, String nameFile2, Options options) throws IOException {
+        BufferedReader reader1;
+        BufferedReader reader2;
+        try {
+            reader1 = new BufferedReader(new InputStreamReader(new FileInputStream(nameFile1), StandardCharsets.UTF_8));
+            reader2 = new BufferedReader(new InputStreamReader(new FileInputStream(nameFile2), StandardCharsets.UTF_8));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
         String line1;
         String line2;
 
@@ -61,36 +118,7 @@ public class Main {
                 list2.add(line2);
             }
         }
-
-        switch (options.sortOrder) {
-            case 'a': {
-                switch (options.dataType) {
-                    case 's' -> result = Sorter.sortStrAsc(list1, list2);
-                    case 'i' -> result = Sorter.sortIntAsc(list1, list2);
-                }
-            }
-            case 'd': {
-                switch (options.dataType) {
-                    case 's' -> result = Sorter.sortStrDes(list1, list2);
-                    case 'i' -> result = Sorter.sortIntDes(list1, list2);
-                }
-            }
-        }
-
-        if (options.dataType == 'i') {
-            for (Object integer : result) {
-                System.out.println(integer);
-            }
-        } else {
-            for (Object str : result) {
-                System.out.println(str);
-            }
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(options.nameOutputFile))) {
-
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
     }
+
+
 }

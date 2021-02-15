@@ -5,6 +5,38 @@ import java.util.ArrayList;
 
 public class Sorter {
 
+    public static ArrayList sort(Options options, ArrayList list1, ArrayList list2) {
+
+        ArrayList result;
+        if (options.dataType == 's') result = new ArrayList<String>();
+        else result = new ArrayList<Integer>();
+
+        switch (options.sortOrder) {
+            case 'a': {
+                switch (options.dataType) {
+                    case 's': {
+                        return Sorter.sortStrAsc(list1, list2);
+                    }
+                    case 'i': {
+                        return Sorter.sortIntAsc(list1, list2);
+                    }
+                }
+            }
+            case 'd': {
+                switch (options.dataType) {
+                    case 's': {
+                        return Sorter.sortStrDes(list1, list2);
+                    }
+                    case 'i': {
+                        return Sorter.sortIntDes(list1, list2);
+
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     public static ArrayList<Integer> sortIntAsc(ArrayList<Integer> list1, ArrayList<Integer> list2) {
         ArrayList<Integer> result = new ArrayList<>();
         int i = 0;
@@ -100,10 +132,12 @@ public class Sorter {
         while (i < s1.length() && i < s2.length()) {
             if (s1.charAt(i) < s2.charAt(i)) {
                 return true;
+            } else if (s1.charAt(i) == s2.charAt(i)) {
+                i++;
+            } else {
+                return false;
             }
-            i++;
         }
         return s1.length() < s2.length();
     }
-
 }
