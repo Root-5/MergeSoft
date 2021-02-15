@@ -21,7 +21,7 @@ public class Main {
         try {
             if (new File(options.nameOutputFile).createNewFile())
                 System.out.println("File " + options.nameOutputFile + " was created!");
-            else System.out.println("Error from creating file");
+            else System.out.println("Error: can't create new out file");
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -34,11 +34,9 @@ public class Main {
         if (options.dataType == 'i') {
             list1 = new ArrayList<Integer>();
             list2 = new ArrayList<Integer>();
-            result = new ArrayList<Integer>();
         } else if (options.dataType == 's') {
             list1 = new ArrayList<String>();
             list2 = new ArrayList<String>();
-            result = new ArrayList<String>();
         } else {
             System.out.println("Error: Data type entered incorrectly");
             return;
@@ -55,11 +53,6 @@ public class Main {
             }
         }
 
-        /*
-        for (Object ob : result) {
-            System.out.println(ob);
-        }*/
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(options.nameOutputFile))) {
             for (Object ob : result) {
                 writer.write(ob.toString() + '\n');
@@ -74,19 +67,26 @@ public class Main {
         list.clear();
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(nameFile), StandardCharsets.UTF_8));
-        } catch (IOException ex) {
+        } catch (FileNotFoundException ex) {
+            System.out.println("Can't find the input file: " + "\"" + nameFile + "\"" + "! Exit.");
             ex.printStackTrace();
             return;
         }
         String line;
-        if (options.dataType == 's') {
-            while ((line = bufferedReader.readLine()) != null) {
-                list.add(line);
+        try {
+            if (options.dataType == 's') {
+                while ((line = bufferedReader.readLine()) != null) {
+                    list.add(line);
+                }
+            } else {
+                while ((line = bufferedReader.readLine()) != null) {
+                    list.add(Integer.parseInt(line));
+                }
             }
-        } else {
-            while ((line = bufferedReader.readLine()) != null) {
-                list.add(Integer.parseInt(line));
-            }
+        } catch (NumberFormatException ex) {
+            System.out.println("Error: you probably entered the wrong argument! Exit");
+            System.exit(0);
+            //ex.printStackTrace();
         }
     }
 
@@ -103,20 +103,26 @@ public class Main {
         String line1;
         String line2;
 
-        if (options.dataType == 'i') {
-            while ((line1 = reader1.readLine()) != null) {
-                list1.add(Integer.parseInt(line1));
+        try {
+            if (options.dataType == 'i') {
+                while ((line1 = reader1.readLine()) != null) {
+                    list1.add(Integer.parseInt(line1));
+                }
+                while ((line2 = reader2.readLine()) != null) {
+                    list2.add(Integer.parseInt(line2));
+                }
+            } else {
+                while ((line1 = reader1.readLine()) != null) {
+                    list1.add(line1);
+                }
+                while ((line2 = reader2.readLine()) != null) {
+                    list2.add(line2);
+                }
             }
-            while ((line2 = reader2.readLine()) != null) {
-                list2.add(Integer.parseInt(line2));
-            }
-        } else {
-            while ((line1 = reader1.readLine()) != null) {
-                list1.add(line1);
-            }
-            while ((line2 = reader2.readLine()) != null) {
-                list2.add(line2);
-            }
+        } catch (NumberFormatException ex) {
+            System.out.println("Error: you probably entered the wrong argument! Exit.");
+            System.exit(0);
+            //ex.printStackTrace();
         }
     }
 
