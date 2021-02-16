@@ -14,20 +14,20 @@ public class Sorter {
         switch (options.sortOrder) {
             case 'a': {
                 switch (options.dataType) {
-                    case 's': {
+                    case 's' -> {
                         return Sorter.sortStrAsc(list1, list2);
                     }
-                    case 'i': {
+                    case 'i' -> {
                         return Sorter.sortIntAsc(list1, list2);
                     }
                 }
             }
             case 'd': {
                 switch (options.dataType) {
-                    case 's': {
+                    case 's' -> {
                         return Sorter.sortStrDes(list1, list2);
                     }
-                    case 'i': {
+                    case 'i' -> {
                         return Sorter.sortIntDes(list1, list2);
 
                     }
@@ -130,13 +130,9 @@ public class Sorter {
     private static boolean isLower(String s1, String s2) {
         int i = 0;
         while (i < s1.length() && i < s2.length()) {
-            if (s1.charAt(i) < s2.charAt(i)) {
-                return true;
-            } else if (s1.charAt(i) == s2.charAt(i)) {
-                i++;
-            } else {
-                return false;
-            }
+            if (s1.charAt(i) < s2.charAt(i)) return true;
+            else if (s1.charAt(i) == s2.charAt(i)) i++;
+            else return false;
         }
         return s1.length() < s2.length();
     }
